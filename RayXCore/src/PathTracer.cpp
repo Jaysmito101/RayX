@@ -5,6 +5,8 @@
 #include "Hitables/Sphere.hpp"
 #include "Material.hpp"
 #include "Materials/Lambertian.hpp"
+#include "Materials/Metal.hpp"
+#include "Materials/Dielectric.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -38,9 +40,13 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
 
     auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
     auto mat2 = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
+    auto mat3 = std::make_shared<Dielectric>(1.5);
+    auto mat4 = std::make_shared<Metal>(Color(0.2, 0.8, 0.4), 0.3);
 
     world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
     world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5, mat2));
+    world.Add(std::make_shared<Sphere>(Point3(-1, 0.05, -1), 0.5, mat3));
+    world.Add(std::make_shared<Sphere>(Point3(1, 0, -1), 0.5, mat4));
 
     int c = 0;
 

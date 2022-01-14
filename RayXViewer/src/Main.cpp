@@ -19,7 +19,7 @@
 #include "PathTracer.hpp"
 #include "Vec3.hpp"
 
-#define DEFAULT_HEIGHT 400
+#define DEFAULT_HEIGHT 200
 
 static Application* sRayXViewerApplication;
 

@@ -62,4 +62,17 @@ namespace RayX
 		if (x < min) return min;
 		return x;
 	}
+
+	inline Vec3 Reflect(const Vec3& e, const Vec3& n)
+	{
+		return e - 2 * Dot(e, n) * n;
+	}
+
+	inline Vec3 Refract(const Vec3& uv, const Vec3& n, double etaiOverEtat)
+	{
+		auto cosTheta = fmin(Dot(-uv, n), 1.0);
+		Vec3 rOutPerp = etaiOverEtat * (uv + cosTheta * n);
+		Vec3 rOutParallel = -sqrt(abs(1.0 - rOutPerp.LengthSquared())) * n;
+		return rOutPerp + rOutParallel;
+	}
 }
