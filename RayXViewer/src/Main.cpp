@@ -125,6 +125,7 @@ public:
             ImGui::DragInt("Image Width", &width, 1.0f, 1.0f);
 			ImGui::DragInt("Image Height", &height, 1.0f, 1.0f);
 			ImGui::DragInt("Samples Per Pixel", &mPathTracer->mSamplesPerPixel, 1.0f, 1.0f);
+			ImGui::DragInt("Max Light Bounces", &mPathTracer->mMaxBounces, 1.0f, 1.0f);
 			ImGui::NewLine();
 			if(ImGui::Button("Render"))
 			{
@@ -145,6 +146,15 @@ public:
 				).detach();
 			}
 
+			if (mRenderedImage->mImageData)
+			{
+				if (ImGui::Button("Clear"))
+				{
+					memset(mRenderedImage->mImageData, 0, mRenderedImage->mImageHeight * mRenderedImage->mImageWidth * 3);
+					mOGLTexture->SetData(mRenderedImage->mImageData, mRenderedImage->mImageHeight * mRenderedImage->mImageWidth * 3);
+				}
+			}
+
 			ImGui::NewLine();
 			ImGui::NewLine();
 			if (mRenderedImage->mImageData)
@@ -161,6 +171,18 @@ public:
         {
             ImGui::Text("Rendering");
             ImGui::ProgressBar(mPathTracer->mRenderProgress);
+
+			ImGui::NewLine();
+
+			if (!mPathTracer->mCancelRendering)
+			{
+				if (ImGui::Button("Cancel"))
+					mPathTracer->mCancelRendering = true;
+			}
+			else
+			{
+				ImGui::Text("Cancelling Render ...");
+			}
         }
 
 

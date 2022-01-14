@@ -6,11 +6,12 @@ namespace RayX
 	class Sphere : public Hitable
 	{
 	public:
-		Sphere(Point3 center = Point3(0, 0, -1), double radius = 1.0f);
+		Sphere(Point3 center, double radius, std::shared_ptr<Material> m);
 
 		virtual bool Hit(Ray& r, double tMin, double tMax, HitRecord& rec) override;
 
 		Point3 mCenter;
 		double mRadius;
+		std::shared_ptr<Material> mMaterial;
 	};
 }

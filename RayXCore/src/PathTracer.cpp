@@ -3,6 +3,8 @@
 #include "World.hpp"
 #include "Camera.hpp"
 #include "Hitables/Sphere.hpp"
+#include "Material.hpp"
+#include "Materials/Lambertian.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -12,9 +14,9 @@ namespace RayX
 {
 
 PathTracer::PathTracer(int width, int height)
-: mImageWidth(width), mImageHeight(height), mIsRendering(false), mRenderProgress(0.0f), mSamplesPerPixel(100)
+: mImageWidth(width), mImageHeight(height), mIsRendering(false), mRenderProgress(0.0f), mSamplesPerPixel(50), mMaxBounces(25)
 {
-
+    mCancelRendering = false;
 }
 
 PathTracer::~PathTracer()
@@ -24,6 +26,7 @@ PathTracer::~PathTracer()
 void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)> callback)
 {
     mRenderProgress = 0.0f;
+    mCancelRendering = false;
     mIsRendering = true;
 
     int imageWidth = image->mImageWidth;
@@ -32,8 +35,12 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
     Camera cam((double)imageWidth/imageHeight);
 
     World world;
-    world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5));
-    world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100));
+
+    auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
+    auto mat2 = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
+
+    world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
+    world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5, mat2));
 
     int c = 0;
 
@@ -48,7 +55,7 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
                 auto u = double(i + RandomDouble()) / (imageWidth - 1);
                 auto v = double(j + RandomDouble()) / (imageHeight - 1);
                 r = cam.GetRay(u, v);
-                pixelColor += Trace(r, world);
+                pixelColor += Trace(r, world, mMaxBounces);
             }
             pixelColor /= mSamplesPerPixel;
             image->SetPixel(i, imageHeight - j, pixelColor);
@@ -56,6 +63,11 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
             c++;
             if (j % 10 == 0)
             {
+                if (mCancelRendering) 
+                {
+                    mIsRendering = false;
+                    return;
+                }
                 mRenderProgress = ((float)c) / (imageHeight * imageWidth);
                 callback(mRenderProgress);
             }
@@ -67,14 +79,20 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
 }
 
 
-Color PathTracer::Trace(Ray& r, World& world)
+Color PathTracer::Trace(Ray& r, World& world, int depth)
 {
     HitRecord rec;
 
-    if (world.Hit(r, 0, infinity, rec))
-    {
+    if (depth <= 0)
+        return Color(0);
 
-        return 0.5 * (rec.normal + Color(1));
+    if (world.Hit(r, 0.001, infinity, rec))
+    {
+        Ray scattered;
+        Color attenuation;
+        if(rec.material->Scatter(r, rec, attenuation, scattered))
+            return attenuation * Trace(scattered, world, depth - 1);
+        return Color(0);
     }
 
     Vec3 dir = Normalized(r.mDirection);

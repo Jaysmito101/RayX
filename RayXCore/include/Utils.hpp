@@ -8,6 +8,8 @@
 #include <memory>
 #include <iostream>
 
+#include "Vec3.hpp"
+
 namespace RayX
 {
 
@@ -27,6 +29,31 @@ namespace RayX
 	inline double RandomDouble(double min, double max)
 	{
 		return (rand() / (RAND_MAX + 1.0)) * (max - min) + min;
+	}
+
+	inline Vec3 RandomVec3()
+	{
+		return Vec3(RandomDouble(), RandomDouble(), RandomDouble());
+	}
+
+	inline Vec3 RandomVec3(double min, double max)
+	{
+		return Vec3(RandomDouble(min, max), RandomDouble(min, max), RandomDouble(min, max));
+	}
+
+	inline Vec3 RandomVec3InUnitSphere()
+	{
+		while (true)
+		{
+			Vec3 p = RandomVec3(-1, 1);
+			if (p.LengthSquared() >= 1) continue;
+			return p;
+		}
+	}
+
+	inline Vec3 RandomUnitVec3()
+	{
+		return Normalized(RandomVec3());
 	}
 
 	inline double Clamp(double x, double min, double max)

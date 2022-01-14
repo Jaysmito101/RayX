@@ -17,6 +17,11 @@ namespace RayX
 
     void Image::SetPixel(int x, int y, Color color)
     {
+        // Gamma Correction
+        color.x = sqrt(color.x);
+        color.y = sqrt(color.y);
+        color.z = sqrt(color.z);
+
         mIsPixelSetting = true;
         unsigned char* offset = mImageData + (x * 3 + mImageWidth * y * 3);
         offset[0] = static_cast<unsigned char>(Clamp(color.x, 0, 0.999) * 255.999);

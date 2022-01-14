@@ -18,6 +18,12 @@ namespace RayX
 
 		Vec3(double x, double y, double z);
 
+		inline bool IsNearZero()
+		{
+			const auto s = 1e-8;
+			return (abs(x) < s) && (abs(y) < s) && (abs(z) < s);
+		}
+
 		inline Vec3 operator-() const 
 		{
 			return Vec3(-x, -y, -z);

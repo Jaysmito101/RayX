@@ -2,8 +2,8 @@
 
 namespace RayX
 {
-	Sphere::Sphere(Point3 center, double radius)
-		:mCenter(center), mRadius(radius)
+	Sphere::Sphere(Point3 center, double radius, std::shared_ptr<Material> mat)
+		:mCenter(center), mRadius(radius), mMaterial(mat)
 	{}
 
 	bool Sphere::Hit(Ray& r, double tMin, double tMax, HitRecord& rec)
@@ -31,6 +31,7 @@ namespace RayX
         rec.point = r.EvaluateAt(root);
         Vec3 outwardNormal = (rec.point - mCenter) / mRadius;
         rec.SetFaceNormal(r, outwardNormal);
+        rec.material = mMaterial;
 
         return true;
 	}

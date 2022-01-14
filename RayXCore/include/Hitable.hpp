@@ -4,6 +4,8 @@
 
 namespace RayX
 {
+	class Material;
+
 	class HitRecord
 	{
 	public:
@@ -18,6 +20,7 @@ namespace RayX
 		Vec3 normal;
 		double t;
 		bool frontFace;
+		std::shared_ptr<Material> material;
 	};
 
 	class Hitable

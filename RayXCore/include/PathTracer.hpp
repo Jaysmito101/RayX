@@ -23,14 +23,17 @@ namespace RayX
         void Render(std::shared_ptr<Image> image, std::function<void(float)> callback = [] (float) {});
 
     protected:
-        Color Trace(Ray& r, World& world);
+        Color Trace(Ray& r, World& world, int depth);
 
     public:
         std::atomic<bool> mIsRendering;
+        std::atomic<bool> mCancelRendering;
         float mRenderProgress;    
         int mImageWidth;
         int mImageHeight;
         int mSamplesPerPixel;
+        int mMaxBounces;
+        
     }; // class PathTracer
     
 } // namespace RayX
