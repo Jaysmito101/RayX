@@ -1,4 +1,5 @@
 #include "Image.hpp"
+#include "Utils.hpp"
 
 namespace RayX
 {
@@ -18,9 +19,9 @@ namespace RayX
     {
         mIsPixelSetting = true;
         unsigned char* offset = mImageData + (x * 3 + mImageWidth * y * 3);
-        offset[0] = static_cast<unsigned char>(color.x * 255.999);
-        offset[1] = static_cast<unsigned char>(color.y * 255.999);
-        offset[2] = static_cast<unsigned char>(color.z * 255.999);
+        offset[0] = static_cast<unsigned char>(Clamp(color.x, 0, 0.999) * 255.999);
+        offset[1] = static_cast<unsigned char>(Clamp(color.y, 0, 0.999) * 255.999);
+        offset[2] = static_cast<unsigned char>(Clamp(color.z, 0, 0.999) * 255.999);
         mIsPixelSetting = false;
     }
 

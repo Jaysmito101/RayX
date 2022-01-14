@@ -123,7 +123,8 @@ public:
         {
             ImGui::Text("Image Settings");
             ImGui::DragInt("Image Width", &width, 1.0f, 1.0f);
-            ImGui::DragInt("Image Height", &height, 1.0f, 1.0f);
+			ImGui::DragInt("Image Height", &height, 1.0f, 1.0f);
+			ImGui::DragInt("Samples Per Pixel", &mPathTracer->mSamplesPerPixel, 1.0f, 1.0f);
 			ImGui::NewLine();
 			if(ImGui::Button("Render"))
 			{

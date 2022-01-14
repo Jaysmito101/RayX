@@ -1,13 +1,18 @@
 #include "PathTracer.hpp"
+#include "Utils.hpp"
+#include "World.hpp"
+#include "Camera.hpp"
+#include "Hitables/Sphere.hpp"
 
 #include <iostream>
 #include <chrono>
+
 
 namespace RayX
 {
 
 PathTracer::PathTracer(int width, int height)
-: mImageWidth(width), mImageHeight(height), mIsRendering(false), mRenderProgress(0.0f)
+: mImageWidth(width), mImageHeight(height), mIsRendering(false), mRenderProgress(0.0f), mSamplesPerPixel(100)
 {
 
 }
@@ -23,28 +28,29 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
 
     int imageWidth = image->mImageWidth;
     int imageHeight = image->mImageHeight;
+   
+    Camera cam((double)imageWidth/imageHeight);
 
-    double aspectRatio = (double)imageWidth / imageHeight;
-    double viewportHeight = 2.0;
-    double viewportWidth = aspectRatio * viewportHeight;
-    double focalLength = 1.0;
+    World world;
+    world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5));
+    world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100));
 
-    auto origin = Point3(0);
-    auto horizontal = Vec3(viewportWidth, 0, 0);
-    auto vertical = Vec3(0, viewportHeight, 0);
-
-    auto lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - Vec3(0, 0, focalLength);
-    
     int c = 0;
 
     for (int j = imageHeight - 1; j >= 0; j--)
     {
         for (int i = 0; i < imageWidth; i++)
         {
-            auto u = double(i) / (imageWidth - 1);
-            auto v = double(j) / (imageHeight - 1);
-            Ray r(origin, lowerLeftCorner + u*horizontal + v * vertical - origin);
-            Color pixelColor = Trace(r);
+            Color pixelColor;
+            Ray r;
+            for (int s = 0; s < mSamplesPerPixel; s++)
+            {
+                auto u = double(i + RandomDouble()) / (imageWidth - 1);
+                auto v = double(j + RandomDouble()) / (imageHeight - 1);
+                r = cam.GetRay(u, v);
+                pixelColor += Trace(r, world);
+            }
+            pixelColor /= mSamplesPerPixel;
             image->SetPixel(i, imageHeight - j, pixelColor);
 
             c++;
@@ -52,7 +58,6 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
             {
                 mRenderProgress = ((float)c) / (imageHeight * imageWidth);
                 callback(mRenderProgress);
-                std::this_thread::sleep_for(std::chrono::nanoseconds(100));
             }
         }
     }
@@ -61,24 +66,19 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
     mIsRendering = false;
 }
 
-static bool HitSphere(const Point3& center, const double radius, Ray& r)
-{
-    Vec3 oc = r.mOrigin - center;
-    auto a = r.mDirection.LengthSquared();
-    auto b = 2 * Dot(oc, r.mDirection);
-    auto c = oc.LengthSquared() - radius * radius;
-    auto discriminant = b * b - 4 * a * c;
-    return discriminant > 0;
-}
 
-Color PathTracer::Trace(Ray& r)
+Color PathTracer::Trace(Ray& r, World& world)
 {
-    if (HitSphere(Point3(0, 0, -1), 0.5, r))
-        return Color(1,0,0);
+    HitRecord rec;
+
+    if (world.Hit(r, 0, infinity, rec))
+    {
+
+        return 0.5 * (rec.normal + Color(1));
+    }
 
     Vec3 dir = Normalized(r.mDirection);
     auto t = 0.5 * (dir.y + 1);
-
     return (1 - t) * Color(1) + t * Color(0.5, 0.7, 1.0);
 }
 

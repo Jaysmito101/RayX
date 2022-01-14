@@ -45,13 +45,15 @@ namespace RayX
 			}
 		}
 
-		inline Vec3& operator=(Vec3& other)
+		inline Vec3& operator=(const Vec3& other)
 		{
 			x = other.x;
 			y = other.y;
 			z = other.z;
 			return *this;
 		}
+
+		
 
 		inline Vec3& operator+=(const Vec3& other)
 		{
@@ -134,7 +136,7 @@ namespace RayX
 			u.x * v.y - u.y * v.x);
 	}
 	
-	inline Vec3 Normalized(Vec3& v) {
+	inline Vec3 Normalized(Vec3 v){
 		return v / v.Length();
 	}
 	
