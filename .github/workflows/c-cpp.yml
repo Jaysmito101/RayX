@@ -17,6 +17,9 @@ jobs:
       with:
         submodules: true
     
+    - name: Allow Premake
+      run: chmod +x ./ogl/premake/premake5
+    
     - name: Generate Makefiles
       run: ./ogl/premake/premake5 gmake
       
