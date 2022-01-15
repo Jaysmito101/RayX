@@ -3,6 +3,7 @@
 #include "World.hpp"
 #include "Camera.hpp"
 #include "Hitables/Sphere.hpp"
+#include "Hitables/Plane.hpp"
 #include "Material.hpp"
 #include "Materials/Lambertian.hpp"
 #include "Materials/Metal.hpp"
@@ -47,6 +48,7 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
     world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5, mat2));
     world.Add(std::make_shared<Sphere>(Point3(-1, 0.05, -1), 0.5, mat3));
     world.Add(std::make_shared<Sphere>(Point3(1, 0, -1), 0.5, mat4));
+    world.Add(std::make_shared<Plane>(Vec3(0.2932, 0.0733, 0.0973), 0.3, mat4));
 
     int c = 0;
 
