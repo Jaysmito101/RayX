@@ -97,7 +97,7 @@ public:
 
 		height = DEFAULT_HEIGHT;
 		width = DEFAULT_HEIGHT * 1.77;
-
+		mZoom = 1.0f;
 		mCanOGLTexUpdate = false;
 	}
 
@@ -185,6 +185,12 @@ public:
 			}
         }
 
+		ImGui::NewLine();
+		ImGui::NewLine();
+
+                ImGui::Text("Viewer Settings");
+
+		ImGui::DragFloat("Viewer Zoom", &mZoom, 0.01, 0.01);		
 
 		ImGui::End();
 
@@ -192,7 +198,7 @@ public:
 
 		ImGui::Begin("Rendered Image");
 			
-		ImGui::Image((ImTextureID)mOGLTexture->GetRendererID(), ImVec2(mRenderedImage->mImageWidth, mRenderedImage->mImageHeight));
+		ImGui::Image((ImTextureID)mOGLTexture->GetRendererID(), ImVec2(mRenderedImage->mImageWidth*mZoom, mRenderedImage->mImageHeight*mZoom));
 
 		ImGui::End();
 	
@@ -212,6 +218,7 @@ public:
 	std::atomic<bool> mCanOGLTexUpdate;
 
 	int width, height;
+	float mZoom;
 };
 
 } // namespace RayX

@@ -14,3 +14,4 @@ config.h
 **.vcxproj
 **.user
 **.filters
+RayXViewer/*.png
