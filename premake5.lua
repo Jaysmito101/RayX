@@ -89,9 +89,10 @@ project "RayXViewer"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{prj.name}/include",
 		"%{IncludeDir.ImPlot}"
-	}
-	
+	}	
+
 	links {
 		"opengl32",
 		"gdi32",

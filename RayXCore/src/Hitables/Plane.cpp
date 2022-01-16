@@ -2,14 +2,15 @@
 
 namespace RayX
 {
-	Plane::Plane(Vec3 normal, double d, std::shared_ptr<Material> mat)
-		:mNormal(normal), mD(d), mMaterial(mat)
-	{}
+	Plane::Plane(Vec3 normal, Point3 point, std::shared_ptr<Material> mat)
+		:mNormal(normal), mPoint(point)
+	{mMaterial = mat;}
 
 	bool Plane::Hit(Ray& r, double tMin, double tMax, HitRecord& rec)
 	{
+	mD = Dot(mPoint, r.mOrigin); // Ideally should be in Constructor
         auto dDotN = Dot(r.mDirection, mNormal);
-	if(dDotN == 0) return false;
+	if(abs(dDotN) <= 0.001) return false; // If ray is parallel to plane or grazing plane then consider it as not a hit
         auto t = (mD - Dot(r.mOrigin, mNormal)) / dDotN;
 
         if (t < tMin || tMax < t)

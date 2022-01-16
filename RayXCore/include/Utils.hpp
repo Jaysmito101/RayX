@@ -75,4 +75,15 @@ namespace RayX
 		Vec3 rOutParallel = -sqrt(abs(1.0 - rOutPerp.LengthSquared())) * n;
 		return rOutPerp + rOutParallel;
 	}
+
+	template<typename Base, typename T>
+	inline bool InstanceOf(const T *ptr) {
+		return dynamic_cast<const Base*>(ptr) != nullptr;
+	}
+
+	template<typename Base, typename T>
+	inline bool InstanceOf(std::shared_ptr<T> ptr) {
+		return dynamic_cast<const Base*>(ptr.get()) != nullptr;
+	}
+
 }

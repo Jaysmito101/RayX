@@ -12,6 +12,5 @@ namespace RayX
 
 		Point3 mCenter;
 		double mRadius;
-		std::shared_ptr<Material> mMaterial;
 	};
 }

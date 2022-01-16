@@ -5,3 +5,5 @@ SET Platform=
 echo Building RayX
 msbuild /m /p:PlatformTarget=x86 /p:Configuration=Debug RayX.sln
 pause
+echo on
+cls

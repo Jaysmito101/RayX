@@ -27,5 +27,7 @@ namespace RayX
 	{
 	public:
 		virtual bool Hit(Ray& r, double tMin, double tMax, HitRecord& rec) = 0;
+
+		std::shared_ptr<Material> mMaterial;
 	};
 }
