@@ -33,6 +33,7 @@ namespace RayX
         int mImageHeight;
         int mSamplesPerPixel;
         int mMaxBounces;
+	World mWorld;
         
     }; // class PathTracer
     

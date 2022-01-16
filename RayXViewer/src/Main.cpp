@@ -16,8 +16,7 @@
 #include <atomic>
 #include <iostream>
 
-#include "PathTracer.hpp"
-#include "Vec3.hpp"
+#include "RayX.hpp"
 
 #define DEFAULT_HEIGHT 200
 
@@ -77,6 +76,21 @@ static void OnWindowClose(int , int) {
     sRayXViewerApplication->Close();
 }
 
+static void SetupWorld(RayX::World& world)
+{
+    auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
+    auto mat2 = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
+    auto mat3 = std::make_shared<Dielectric>(1.5);
+    auto mat4 = std::make_shared<Metal>(Color(0.2, 0.8, 0.4), 0.3);
+	
+    world.Clear();
+    world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
+    world.Add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5, mat2));
+    world.Add(std::make_shared<Sphere>(Point3(-1, 0.05, -1), 0.5, mat3));
+    world.Add(std::make_shared<Sphere>(Point3(1, 0, -1), 0.5, mat4));
+    world.Add(std::make_shared<Plane>(RayX::RandomUnitVec3(), 0.3, mat4));
+}
+
 class RayXViewerApplication : public Application
 {
 public:
@@ -129,7 +143,8 @@ public:
 			ImGui::NewLine();
 			if(ImGui::Button("Render"))
 			{
-			    std::cout << "Started Rendering ..." << std::endl;
+				SetupWorld(mPathTracer->mWorld);
+			        std::cout << "Started Rendering ..." << std::endl;
 				if (mRenderedImage->mImageWidth != width || mRenderedImage->mImageHeight != height)
 				{
 					mRenderedImage->Resize(width, height);
