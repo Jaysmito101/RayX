@@ -8,9 +8,15 @@ namespace RayX
 	{
 	public:
 
-		Camera(double aspectRatio = 16.0/9.0, double focalLength = 1.0);
+		Camera();
+
+		void Update();
 
 		Ray GetRay(double u, double v);
+
+		Point3 mLookFrom;
+		Point3 mLookAt;
+		Vec3 mVUp;
 
 		Point3 mOrigin;
 		Point3 mLowerLeftCorner;
@@ -18,6 +24,6 @@ namespace RayX
 		Vec3 mVertical;
 
 		double mAspectRatio;
-		double mFocalLength;
+		double mVfov;
 	};
 }

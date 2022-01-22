@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "Vec3.hpp"
+#include "Camera.hpp"
 #include "Image.hpp"
 #include "Ray.hpp"
 #include "World.hpp"
@@ -33,7 +34,8 @@ namespace RayX
         int mImageHeight;
         int mSamplesPerPixel;
         int mMaxBounces;
-	World mWorld;
+        Camera mCamera;
+	    World mWorld;
         
     }; // class PathTracer
     

@@ -35,8 +35,6 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
     int imageWidth = image->mImageWidth;
     int imageHeight = image->mImageHeight;
    
-    Camera cam((double)imageWidth/imageHeight);
-
     int c = 0;
 
     for (int j = imageHeight - 1; j >= 0; j--)
@@ -49,7 +47,7 @@ void PathTracer::Render(std::shared_ptr<Image> image, std::function<void(float)>
             {
                 auto u = double(i + RandomDouble()) / (imageWidth - 1);
                 auto v = double(j + RandomDouble()) / (imageHeight - 1);
-                r = cam.GetRay(u, v);
+                r = mCamera.GetRay(u, v);
                 pixelColor += Trace(r, mWorld, mMaxBounces);
             }
             pixelColor /= mSamplesPerPixel;

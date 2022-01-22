@@ -312,7 +312,9 @@ public:
 					mOGLTexture = std::make_shared<Texture2D>(width, height);
 					mPathTracer->mImageHeight = height;
 					mPathTracer->mImageWidth = width;
+					mPathTracer->mCamera.mAspectRatio = width / height;
 				}
+				mPathTracer->mCamera.Update();
 				std::thread([&] {
 					mPathTracer->Render(mRenderedImage, [&](float progress){
 						mCanOGLTexUpdate = true;
@@ -330,6 +332,12 @@ public:
 					mOGLTexture->SetData(mRenderedImage->mImageData, mRenderedImage->mImageHeight * mRenderedImage->mImageWidth * 3);
 				}
 			}
+			ImGui::NewLine();
+			ImGui::Text("Camera Settings");
+			ImGui::DragScalar("VFOV", ImGuiDataType_Double, &mPathTracer->mCamera.mVfov, 0.1f);
+			ImGui::DragScalarN("Look From", ImGuiDataType_Double, &mPathTracer->mCamera.mLookFrom, 3, 0.01f);
+			ImGui::DragScalarN("Look At", ImGuiDataType_Double, &mPathTracer->mCamera.mLookAt, 3, 0.01f);
+			ImGui::DragScalarN("Up", ImGuiDataType_Double, &mPathTracer->mCamera.mVUp, 3, 0.01f);
 			ImGui::NewLine();
 			ImGui::Text("World Settings");
 			RenderWorldControls(mPathTracer->mWorld);

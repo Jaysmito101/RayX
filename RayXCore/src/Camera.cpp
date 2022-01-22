@@ -3,22 +3,40 @@
 
 namespace RayX
 {
-	Camera::Camera(double aspectRatio, double focalLength)
-		:mAspectRatio(aspectRatio), mFocalLength(focalLength)
+	Camera::Camera()
 	{
-		double viewportHeight = 2.0f;
-		double viewportWidth = viewportHeight * aspectRatio;
-
+		mAspectRatio = 16.0 / 9.0;
 		mOrigin = Point3(0);
+		mVfov = 90;
 
-		mHorizontal = Vec3(viewportWidth, 0, 0);
-		mVertical = Vec3(0, viewportHeight, 0);
-		mLowerLeftCorner = mOrigin - mHorizontal / 2 - mVertical / 2 - Vec3(0, 0, focalLength);
+		mLookFrom = Point3(0);
+		mLookAt = Point3(1);
+		mVUp = Point3(0, 1, 0);
 	}
 
-	Ray Camera::GetRay(double u, double v)
+	void Camera::Update()
 	{
-		return Ray(mOrigin, mLowerLeftCorner + u * mHorizontal + v * mVertical - mOrigin);
+		auto theta = DegreesToRadians(mVfov);
+		auto h = tan(theta / 2);
+
+		auto viewportHeight = 2 * h;
+
+		auto viewportWidth = mAspectRatio * viewportHeight;
+
+		auto w = Normalized(mLookFrom - mLookAt);
+		auto u = Normalized(Cross(mVUp, w));
+		auto v = Cross(w, u);
+
+		mOrigin = mLookFrom;
+		mHorizontal = viewportWidth * u;
+		mVertical = viewportHeight * v;
+		mLowerLeftCorner = mOrigin - mHorizontal / 2 - mVertical / 2 - w;
+
+	}
+
+	Ray Camera::GetRay(double s, double t)
+	{
+		return Ray(mOrigin, mLowerLeftCorner + s * mHorizontal + t * mVertical - mOrigin);
 	}
 
 }
