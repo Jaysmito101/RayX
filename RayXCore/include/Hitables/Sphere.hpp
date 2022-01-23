@@ -10,6 +10,9 @@ namespace RayX
 
 		virtual bool Hit(Ray& r, double tMin, double tMax, HitRecord& rec) override;
 
+		virtual bool BoundingBox(AABB& outputBox) override;
+
+
 		Point3 mCenter;
 		double mRadius;
 	};

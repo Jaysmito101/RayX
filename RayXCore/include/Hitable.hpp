@@ -1,5 +1,5 @@
 #pragma once
-#include "Utils.hpp"
+#include "AABB.hpp"
 #include "Ray.hpp"
 
 namespace RayX
@@ -26,7 +26,10 @@ namespace RayX
 	class Hitable
 	{
 	public:
+		
 		virtual bool Hit(Ray& r, double tMin, double tMax, HitRecord& rec) = 0;
+
+		virtual bool BoundingBox(AABB& outputBox) = 0;
 
 		std::shared_ptr<Material> mMaterial;
 	};

@@ -35,4 +35,12 @@ namespace RayX
 
         return true;
 	}
+    
+    bool Sphere::BoundingBox(AABB& outputBox)
+    {
+        outputBox = AABB(
+            mCenter - Vec3(mRadius, mRadius, mRadius),
+            mCenter + Vec3(mRadius, mRadius, mRadius));
+        return true;
+    }
 }

@@ -36,6 +36,7 @@ namespace RayX
         int mMaxBounces;
         Camera mCamera;
 	    World mWorld;
+        std::function<void(std::string)> mOnStatusMessages;
         
     }; // class PathTracer
     

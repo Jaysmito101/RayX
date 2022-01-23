@@ -9,6 +9,9 @@ namespace RayX
 		Plane(Vec3 normal, Point3 point, std::shared_ptr<Material> m);
 
 		virtual bool Hit(Ray& r, double tMin, double tMax, HitRecord& rec) override;
+		
+		virtual bool BoundingBox(AABB& outputBox) override;
+
 
 		Vec3 mNormal;
 		Point3 mPoint;

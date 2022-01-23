@@ -9,8 +9,8 @@ namespace RayX
 		mOrigin = Point3(0);
 		mVfov = 90;
 
-		mLookFrom = Point3(0);
-		mLookAt = Point3(1);
+		mLookFrom = Point3(0, 0, -1);
+		mLookAt = Point3(0, 0, 1);
 		mVUp = Point3(0, 1, 0);
 	}
 

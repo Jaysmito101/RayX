@@ -13,6 +13,7 @@
 #include "Hitable.hpp"
 #include "Material.hpp"
 #include "PathTracer.hpp"
+#include "AABB.hpp"
 
 // RayXCore Hitables [Optional] [you can include individually also]
 

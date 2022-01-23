@@ -9,6 +9,11 @@
 #include <iostream>
 
 #include "Vec3.hpp"
+#include "Hitable.hpp"
+#include "AABB.hpp"
+
+#define MAX(x, y) (x) > (y) ? (x) : (y)
+#define MIN(x, y) (x) < (y) ? (x) : (y)
 
 namespace RayX
 {
@@ -29,6 +34,11 @@ namespace RayX
 	inline double RandomDouble(double min, double max)
 	{
 		return (rand() / (RAND_MAX + 1.0)) * (max - min) + min;
+	}
+
+	inline int RandomInt(int min, int max)
+	{
+		return static_cast<int>(RandomDouble(min, max + 1));
 	}
 
 	inline Vec3 RandomVec3()
@@ -86,4 +96,20 @@ namespace RayX
 		return dynamic_cast<const Base*>(ptr.get()) != nullptr;
 	}
 
+	inline AABB SurroundingBox(AABB box0, AABB box1)
+	{
+		Point3 sm(
+			fmin(box0.mMinimum.x, box1.mMinimum.x),
+			fmin(box0.mMinimum.y, box1.mMinimum.y),
+			fmin(box0.mMinimum.z, box1.mMinimum.z)
+		);
+
+		Point3 bg(
+			fmax(box0.mMaximum.x, box1.mMaximum.x),
+			fmax(box0.mMaximum.y, box1.mMaximum.y),
+			fmax(box0.mMaximum.z, box1.mMaximum.z)
+		);
+
+		return AABB(sm, bg);
+	}
 }
