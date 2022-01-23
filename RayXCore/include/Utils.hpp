@@ -18,8 +18,8 @@
 namespace RayX
 {
 
-	const double infinity = std::numeric_limits<double>::infinity();
-	const double pi = PI;
+	constexpr double infinity = std::numeric_limits<double>::infinity();
+	constexpr double pi = PI;
 
 	inline double DegreesToRadians(double degrees)
 	{

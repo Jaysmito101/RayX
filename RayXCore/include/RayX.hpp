@@ -11,6 +11,7 @@
 #include "Vec3.hpp"
 #include "World.hpp"
 #include "Hitable.hpp"
+#include "Texture.hpp"
 #include "Material.hpp"
 #include "PathTracer.hpp"
 #include "AABB.hpp"
@@ -33,3 +34,12 @@
 #include "Materials/Metal.hpp"
 
 #endif // RAYX_CORE_EXCLUDE_MATERIALS
+
+// RayXCore Textures [Optional] [you can include individually also]
+
+#ifndef RAYX_CORE_EXCLUDE_TEXTURES
+
+#include "Textures/SolidColor.hpp"
+#include "Textures/CheckerTexture.hpp"
+
+#endif // RAYX_CORE_EXCLUDE_TEXTURES

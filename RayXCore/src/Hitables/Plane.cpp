@@ -24,6 +24,11 @@ namespace RayX
 		rec.t = t;
 		rec.point = r.EvaluateAt(t);
 		Vec3 outwardNormal = mNormal;
+
+		Vec3 u = Normalized(Vec3(mNormal.y, -mNormal.x, 0));
+		Vec3 v = Cross(mNormal, u);
+		rec.u = Dot(u, rec.point);
+		rec.v = Dot(v, rec.point);
 		rec.SetFaceNormal(r, outwardNormal);
 		rec.material = mMaterial;
 

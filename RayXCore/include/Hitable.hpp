@@ -19,6 +19,8 @@ namespace RayX
 		Point3 point;
 		Vec3 normal;
 		double t;
+		double u;
+		double v;
 		bool frontFace;
 		std::shared_ptr<Material> material;
 	};

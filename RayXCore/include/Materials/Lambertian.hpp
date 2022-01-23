@@ -10,10 +10,12 @@ namespace RayX
 	public:
 		Lambertian(Color col);
 
+		Lambertian(std::shared_ptr<Texture> texture);
+
 		virtual bool Scatter(Ray& rIn, HitRecord& rec, Color& attenuation, Ray& rScattered) override;
 
 	public:
-		Color albedo;
+		std::shared_ptr<Texture> mAlbedo;
 	};
 
 }

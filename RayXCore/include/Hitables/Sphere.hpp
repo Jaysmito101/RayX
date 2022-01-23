@@ -12,7 +12,10 @@ namespace RayX
 
 		virtual bool BoundingBox(AABB& outputBox) override;
 
+	private:
+		static void GetSphereUV(Point3& p, double& u, double& v);
 
+	public:
 		Point3 mCenter;
 		double mRadius;
 	};

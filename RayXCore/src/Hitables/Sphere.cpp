@@ -1,4 +1,5 @@
 #include "Hitables/Sphere.hpp"
+#include "Utils.hpp"
 
 namespace RayX
 {
@@ -31,6 +32,7 @@ namespace RayX
         rec.point = r.EvaluateAt(root);
         Vec3 outwardNormal = (rec.point - mCenter) / mRadius;
         rec.SetFaceNormal(r, outwardNormal);
+        GetSphereUV(outwardNormal, rec.u, rec.v);
         rec.material = mMaterial;
 
         return true;
@@ -42,5 +44,14 @@ namespace RayX
             mCenter - Vec3(mRadius, mRadius, mRadius),
             mCenter + Vec3(mRadius, mRadius, mRadius));
         return true;
+    }
+
+    void Sphere::GetSphereUV(Point3& p, double& u, double& v)
+    {
+        auto theta = acos(-p.y);
+        auto phi = atan2(-p.z, p.x) + PI;
+
+        u = phi / (2 * PI);
+        v = theta / pi;
     }
 }

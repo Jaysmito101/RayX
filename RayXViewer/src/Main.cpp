@@ -143,110 +143,55 @@ namespace RayX
 		sRayXViewerApplication->Close();
 	}
 
-	static void RenderAddHitableItemControl(RayX::World& world)
+
+	static void SetupWorldWithBalls(RayX::World& world)
 	{
-		std::shared_ptr<RayX::Hitable> item;
-		ImGui::Separator();
-		if (ImGui::Button("Add Sphere"))
-			item = std::make_shared<Sphere>(Point3(0), 1, std::make_shared<Lambertian>(Color(0.9)));
-		ImGui::SameLine();
-		if (ImGui::Button("Add Plane"))
-			item = std::make_shared<Plane>(Point3(1, 0, 0), 0, std::make_shared<Lambertian>(Color(0.9)));
-		if (item)
-			world.Add(item);
-		ImGui::Separator();
-	}
+		auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
 
-	static void RenderHitableItemControl(std::shared_ptr<RayX::Hitable> item, int id)
-	{
-		bool tmp = false;
-		std::shared_ptr<Material> mat;
-		if (RayX::InstanceOf<RayX::Sphere>(item.get()))
+		std::vector<std::shared_ptr<Material>> mats;
+
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Dielectric>(RandomDouble(1, 3)));
+		mats.push_back(std::make_shared<Dielectric>(RandomDouble(1, 3)));
+		mats.push_back(std::make_shared<Dielectric>(RandomDouble(1, 3)));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Lambertian>(Color(RandomDouble(), RandomDouble(), RandomDouble())));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+		mats.push_back(std::make_shared<Metal>(Color(RandomDouble(), RandomDouble(), RandomDouble()), RandomDouble(0, 0.3)));
+
+		world.Clear();
+		world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
+
+
+		for (auto& mat : mats)
 		{
-			std::shared_ptr<RayX::Sphere> itemS = std::dynamic_pointer_cast<RayX::Sphere>(item);
-			mat = itemS->mMaterial;
-			ImGui::Text("Sphere");
-			ImGui::DragScalarN(("Position##Sphere Item : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &itemS->mCenter, 3, 0.01f);
-			ImGui::DragScalar(("Radius##Sphere Item : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &itemS->mRadius, 0.01f);
-		}
-		else if (RayX::InstanceOf<RayX::Plane>(item.get()))
-		{
-			std::shared_ptr<RayX::Plane> itemS = std::dynamic_pointer_cast<RayX::Plane>(item);
-			mat = itemS->mMaterial;
-			ImGui::Text("Plane");
-			ImGui::DragScalarN(("Normal##Plane Item : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &itemS->mNormal, 3, 0.01f);
-			ImGui::DragScalarN(("Point On Plane##Plane Item : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &itemS->mPoint, 3, 0.01f);
-			if (ImGui::Button(("Normalalize Normal##Plane Item : " + std::to_string(id)).c_str()))
+			for (int i = 0; i < 10; i++)
 			{
-				RayX::Normalize(itemS->mNormal);
+				world.Add(std::make_shared<Sphere>(Point3(RandomDouble(-8, 8), RandomDouble(-0.2, 1), RandomDouble(-3, 6)), RandomDouble(), mat));
 			}
-		}
-
-		if (mat)
-		{
-			ImGui::NewLine();
-			if (ImGui::CollapsingHeader(("Material##Item : " + std::to_string(id)).c_str()))
-			{
-
-				if (RayX::InstanceOf<RayX::Lambertian>(mat))
-				{
-					std::shared_ptr<RayX::Lambertian> matS = std::dynamic_pointer_cast<RayX::Lambertian>(mat);
-					ImGui::Text("Lambertian");
-					ImGui::DragScalarN(("Color##Material of Item  : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &matS->albedo, 3, 0.01f);
-				}
-				else if (RayX::InstanceOf<RayX::Metal>(mat))
-				{
-					std::shared_ptr<RayX::Metal> matS = std::dynamic_pointer_cast<RayX::Metal>(mat);
-					ImGui::Text("Metal");
-					ImGui::DragScalarN(("Color##Material of Item  : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &matS->albedo, 3, 0.01f);
-					ImGui::DragScalarN(("Fuzz##Material of Item  : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &matS->mFuzz, 1, 0.01f);
-				}
-				else if (RayX::InstanceOf<RayX::Dielectric>(mat))
-				{
-					std::shared_ptr<RayX::Dielectric> matS = std::dynamic_pointer_cast<RayX::Dielectric>(mat);
-					ImGui::Text("Dielectric");
-					ImGui::DragScalarN(("Refractive Index##Material of Item  : " + std::to_string(id)).c_str(), ImGuiDataType_Double, &matS->mIr, 1, 0.01f);
-				}
-
-				if (ImGui::Button(("To Lambertian##" + std::to_string(id)).c_str()))
-					item->mMaterial = std::make_shared<Lambertian>(Color(1));
-				if (ImGui::Button(("To Dielectric##" + std::to_string(id)).c_str()))
-					item->mMaterial = std::make_shared<Dielectric>(1.5);
-				if (ImGui::Button(("To Metal##" + std::to_string(id)).c_str()))
-					item->mMaterial = std::make_shared<Metal>(Color(1), 0.1);
-			}
-		}
-
-	}
-
-	static void RenderWorldControls(RayX::World& world)
-	{
-		for (int i = 0; i < world.mHitables.size(); i++)
-		{
-			if (ImGui::CollapsingHeader(("Item : " + std::to_string(i)).c_str()))
-			{
-				RenderHitableItemControl(world.mHitables[i], i);
-				ImGui::NewLine();
-				if (ImGui::Button(("Delete Item##WORLD" + std::to_string(i)).c_str()))
-				{
-					world.mHitables.erase(world.mHitables.begin() + i);
-					break;
-				}
-			}
-			ImGui::Separator();
-		}
-		RenderAddHitableItemControl(world);
+		}		
 	}
 
 	static void SetupWorld(RayX::World& world)
 	{
 		auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
-		auto mat2 = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
-		auto mat3 = std::make_shared<Dielectric>(1.5);
-		auto mat4 = std::make_shared<Metal>(Color(0.2, 0.8, 0.4), 0.3);
+
+		auto mat2 = std::make_shared<Lambertian>(Color(0.1, 0.1, 1));
+		auto mat3 = std::make_shared<Lambertian>(Color(1, 0.3, 0.3));
+		auto mat4 = std::make_shared<Lambertian>(std::make_shared<CheckerTexture>());
 
 		world.Clear();
 		world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
+		world.Add(std::make_shared<Sphere>(Point3(0, 0.2, 1), 1, mat4));
+		//world.Add(std::make_shared<Plane>(Point3(0.41, 0.1, 0), Point3(-0.6, 0, 0), mat2));
 	}
 
 	class RayXViewerApplication : public Application
@@ -271,7 +216,7 @@ namespace RayX
 				mStatus = message;
 			};
 
-			SetupWorld(mPathTracer->mWorld);
+			SetupWorldWithBalls(mPathTracer->mWorld);
 
 			LoadDefaultStyle();
 
@@ -327,7 +272,7 @@ namespace RayX
 							if (mTTmp == 100)
 							{
 								mTTmp = 0;
-								stbi_write_png("temp.png", mRenderedImage->mImageWidth, mRenderedImage->mImageHeight, 3, mRenderedImage->mImageData, 0); // Just to keep a backup
+								//stbi_write_png("temp.png", mRenderedImage->mImageWidth, mRenderedImage->mImageHeight, 3, mRenderedImage->mImageData, 0); // Just to keep a backup
 							}
 							});
 						}
@@ -349,10 +294,14 @@ namespace RayX
 				ImGui::DragScalarN("Look At", ImGuiDataType_Double, &mPathTracer->mCamera.mLookAt, 3, 0.01f);
 				ImGui::DragScalarN("Up", ImGuiDataType_Double, &mPathTracer->mCamera.mVUp, 3, 0.01f);
 				ImGui::NewLine();
-				ImGui::Text("World Settings");
-				RenderWorldControls(mPathTracer->mWorld);
-				ImGui::NewLine();
-				ImGui::NewLine();
+				if (ImGui::Button("World With Balls"))
+				{
+					SetupWorldWithBalls(mPathTracer->mWorld);
+				}
+				if (ImGui::Button("World"))
+				{
+					SetupWorld(mPathTracer->mWorld);
+				}
 				if (mRenderedImage->mImageData)
 				{
 					if (ImGui::Button("Export"))
