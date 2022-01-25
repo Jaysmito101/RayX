@@ -41,5 +41,6 @@
 
 #include "Textures/SolidColor.hpp"
 #include "Textures/CheckerTexture.hpp"
+#include "Textures/ImageTexture.hpp"
 
 #endif // RAYX_CORE_EXCLUDE_TEXTURES

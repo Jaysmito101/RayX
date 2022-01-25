@@ -4,6 +4,8 @@
 namespace RayX
 {
 
+    static constexpr double colorScale = 1.0 / 255.0;
+
     Image::Image()
     {
         mImageData = nullptr;
@@ -35,9 +37,9 @@ namespace RayX
         Color col;
         mIsPixelSetting = true;
         unsigned char* offset = mImageData + (x * 3 + mImageWidth * y * 3);
-        col.x = offset[0];
-        col.y = offset[1];
-        col.z = offset[2];
+        col.x = offset[0] * colorScale;
+        col.y = offset[1] * colorScale;
+        col.z = offset[2] * colorScale;
         mIsPixelSetting = false;
         return col;
     }

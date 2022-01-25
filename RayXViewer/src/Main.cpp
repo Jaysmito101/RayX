@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <glfw/glfw3.h>
 #include <stb/stb_image_write.h>
+#include <stb/stb_image.h>
 
 #include <string>
 #include <ctime>
@@ -143,6 +144,32 @@ namespace RayX
 		sRayXViewerApplication->Close();
 	}
 
+	static std::shared_ptr<Image> LoadImageFromPath(std::string path)
+	{
+		stbi_set_flip_vertically_on_load(0);
+		std::shared_ptr<Image> img = std::make_shared<Image>();
+		int w, h, ch;	
+		unsigned char* data = stbi_load(path.data(), &w, &h, &ch, STBI_rgb);
+		if (data)
+		{
+			//img->Resize(w, h);
+			//memcpy(img->mImageData, data, w * h * 3);
+			//stbi_image_free(data);
+			img->mImageHeight = h;
+			img->mImageWidth = w;
+			img->mImageData = data;
+		}
+		else
+		{
+			std::cerr << "Failed to load Image : " << path << "\n";
+		}
+		if(ch != 3)
+			std::cerr << "Image not supported!" << "\n";
+
+		return img;
+	}
+
+
 
 	static void SetupWorldWithBalls(RayX::World& world)
 	{
@@ -180,18 +207,21 @@ namespace RayX
 		}		
 	}
 
+	static std::shared_ptr<Image> tmp;
+
 	static void SetupWorld(RayX::World& world)
 	{
 		auto mat1 = std::make_shared<Lambertian>(Color(0.8, 0.8, 0));
 
 		auto mat2 = std::make_shared<Lambertian>(Color(0.1, 0.1, 1));
 		auto mat3 = std::make_shared<Lambertian>(Color(1, 0.3, 0.3));
-		auto mat4 = std::make_shared<Lambertian>(std::make_shared<CheckerTexture>());
+		tmp = LoadImageFromPath("earthmap.jpg");
+		auto mat4 = std::make_shared<Lambertian>(std::make_shared<ImageTexture>(tmp));
 
 		world.Clear();
 		world.Add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100, mat1));
 		world.Add(std::make_shared<Sphere>(Point3(0, 0.2, 1), 1, mat4));
-		//world.Add(std::make_shared<Plane>(Point3(0.41, 0.1, 0), Point3(-0.6, 0, 0), mat2));
+		world.Add(std::make_shared<Plane>(Point3(0.41, 0.1, 0), Point3(-0.6, 0, 0), mat4));
 	}
 
 	class RayXViewerApplication : public Application
@@ -231,7 +261,8 @@ namespace RayX
 			if (mCanOGLTexUpdate)
 			{
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				mOGLTexture->SetData(mRenderedImage->mImageData, mRenderedImage->mImageWidth * mRenderedImage->mImageHeight * 3);
+				//mOGLTexture->SetData(mRenderedImage->mImageData, mRenderedImage->mImageWidth * mRenderedImage->mImageHeight * 3);
+				mOGLTexture->SetData(tmp->mImageData, tmp->mImageWidth * tmp->mImageHeight * 3);
 				std::cout << "Updated OpenGL Image\n";
 				mCanOGLTexUpdate = false;
 			}
